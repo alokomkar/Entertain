@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_horizontal_margin">16dp</dimen>
+    <dimen name="default_vertical_margin">16dp</dimen>
+    <dimen name="default_horizontal_margin_mid">12dp</dimen>
+    <dimen name="default_vertical_margin_mid">12dp</dimen>
+    <dimen name="default_horizontal_margin_big">24dp</dimen>
+    <dimen name="default_vertical_margin_big">24dp</dimen>
+    <dimen name="default_horizontal_margin_large">42dp</dimen>
+    <dimen name="default_vertical_margin_large">42dp</dimen>
+    <dimen name="default_horizontal_margin_extra_large">64dp</dimen>
+    <dimen name="default_vertical_margin_extra_large">64dp</dimen>
+    <dimen name="default_padding_small">4dp</dimen>
+    <dimen name="feature_height">200dp</dimen>
+    <dimen name="cardview_corner_radius">8dp</dimen>
+    <dimen name="cardview_elevation">4dp</dimen>
+    <dimen name="default_small_text_size">12sp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+</resources>

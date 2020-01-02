@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Normal" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:fontFamily">@font/app_font_regular</item>
+    </style>
+
+    <style name="Normal.SubTitle">
+        <item name="android:textColor">@color/textColorSubTitle</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Title" parent="Normal">
+        <item name="android:textColor">@color/textColorTitle</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Bold" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:fontFamily">@font/app_font_bold</item>
+    </style>
+
+    <style name="Bold.Title">
+        <item name="android:textSize">29sp</item>
+    </style>
+
+    <style name="Bold.HeadLine">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Bold.SubTitle">
+        <item name="android:textColor">@color/textColorSubTitle</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>

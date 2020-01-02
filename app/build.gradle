@@ -1,0 +1,59 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.alokomkar.entertain"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility versions.sourceCompat
+        targetCompatibility versions.targetCompat
+    }
+
+    //For testing
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    implementation project(':core')
+    kapt 'androidx.room:room-compiler:2.2.3'
+    kapt deps.google.daggerProcessor
+
+    //Local unit tests
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.robolectric
+    testImplementation deps.test.mockWebServer
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
+    testImplementation 'androidx.room:room-testing:2.2.3'
+
+    androidTestImplementation deps.test.junit
+    androidTestImplementation deps.test.mockitoKotlin
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.room:room-testing:2.2.3'
+    androidTestImplementation 'androidx.arch.core:core-testing:2.1.0'
+}
