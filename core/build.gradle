@@ -26,10 +26,10 @@ android {
                 optimizeCode false
                 proguardFile 'proguard-rules.pro'
             }
-            buildConfigField 'String', 'BASE_URL', '"http://www.omdbapi.com/"'
+            buildConfigField 'String', 'BASE_URL', '"https://www.omdbapi.com/"'
         }
         debug {
-            buildConfigField 'String', 'BASE_URL', '"http://www.omdbapi.com/"'
+            buildConfigField 'String', 'BASE_URL', '"https://www.omdbapi.com/"'
             buildConfigField 'String', 'API_KEY', '"1425e29b"'
         }
     }

@@ -9,7 +9,7 @@
     <fragment
         android:id="@+id/listFragment"
         android:name="com.alokomkar.entertainment.ui.list.ListFragment"
-        android:label="fragment_news_list"
+        android:label="listFragment"
         tools:layout="@layout/fragment_list" >
         <action
             android:id="@+id/action_listFragment_to_detailsFragment"

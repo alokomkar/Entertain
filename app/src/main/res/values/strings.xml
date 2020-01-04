@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Entertain</string>
     <string name="back">Back</string>
+    <string name="message_showing_offline_data">Showing Offline Data</string>
 </resources>
