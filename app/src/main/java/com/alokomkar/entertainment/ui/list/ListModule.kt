@@ -11,6 +11,7 @@ import com.alokomkar.entertainment.ui.model.DataContract
 import com.alokomkar.entertainment.ui.model.LocalImpl
 import com.alokomkar.entertainment.ui.model.RemoteImpl
 import com.alokomkar.entertainment.ui.model.RepositoryImpl
+import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 import dagger.Binds
 import dagger.Module
@@ -23,7 +24,7 @@ class ListModule {
 
     @Provides
     @ActivityScope
-    fun listAdapter( picasso: Picasso ): SearchListAdapter = SearchListAdapter(picasso)
+    fun listAdapter(): SearchListAdapter = SearchListAdapter()
     
     @Provides
     @ActivityScope

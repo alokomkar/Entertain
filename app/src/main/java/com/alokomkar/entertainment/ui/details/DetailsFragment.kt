@@ -11,14 +11,11 @@ import com.alokomkar.entertainment.EntertainApplication
 import com.alokomkar.entertainment.MainActivity
 import com.alokomkar.entertainment.R
 import com.alokomkar.entertainment.ui.EntertainViewModel
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.fragment_details.*
-import javax.inject.Inject
 
 class DetailsFragment : Fragment() {
 
-    @Inject
-    lateinit var picasso: Picasso
     private lateinit var viewModel: EntertainViewModel
 
     override fun onAttach(context: Context) {
@@ -38,7 +35,7 @@ class DetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getSelectedItem().observe(viewLifecycleOwner, Observer {
             with(it) {
-                picasso.load(poster).into(ivBackground)
+                Glide.with(ivBackground).load(poster).into(ivBackground)
                 tvTitle.text = title
                 tvDescription.text = type
                 tvDate.text = year

@@ -2,6 +2,7 @@ package com.alokomkar.core.extensions
 
 import android.graphics.Color
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import java.io.IOException
@@ -28,4 +29,8 @@ fun Fragment.handleFailures(failure: Throwable, retry: (() -> Unit)? = null) {
         messageTextView.setTextColor(Color.WHITE)
         snackBar.show()
     }
+}
+
+fun Fragment.showToast( message : Int ) {
+    Toast.makeText(this.context, message, Toast.LENGTH_SHORT).show()
 }

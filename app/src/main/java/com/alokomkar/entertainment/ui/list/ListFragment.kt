@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.alokomkar.core.extensions.handleFailures
+import com.alokomkar.core.extensions.showToast
 import com.alokomkar.core.networking.Response
 import com.alokomkar.entertainment.EntertainApplication
 import com.alokomkar.entertainment.MainActivity
@@ -44,6 +45,10 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
             rvShows.apply {
                 adapter = listAdapter.apply {
                     onItemClickListener = this@ListFragment
+                    onReadyToLoadMore = {
+                        fetchData()
+                        showToast(R.string.loading)
+                    }
                 }
             }
             listRefreshLayout.setOnRefreshListener { fetchData() }
@@ -62,8 +67,6 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
                 }
             })
         }
-
-
 
         if( viewModel.showsListLiveData.value == null )
             fetchData()
@@ -97,4 +100,5 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
             navController.navigate(R.id.action_listFragment_to_detailsFragment)
         }
     }
+
 }

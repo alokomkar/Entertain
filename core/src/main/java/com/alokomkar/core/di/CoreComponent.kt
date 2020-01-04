@@ -3,6 +3,7 @@ package com.alokomkar.core.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.alokomkar.core.networking.Scheduler
+import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
 import dagger.Component
 import retrofit2.Retrofit
@@ -14,6 +15,7 @@ interface CoreComponent {
     fun context(): Context
     fun retrofit(): Retrofit
     fun picasso(): Picasso
+    fun glide(): Glide
     fun sharedPreferences(): SharedPreferences
     fun scheduler(): Scheduler
 }

@@ -69,6 +69,8 @@ dependencies {
     api deps.square.picasso
     api deps.square.okhttpDownloader
 
+    api deps.square.glide
+
     api deps.square.retrofit
     api deps.square.okhttpLogging
     api deps.square.okhttp

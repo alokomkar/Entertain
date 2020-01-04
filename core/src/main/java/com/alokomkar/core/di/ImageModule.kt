@@ -1,6 +1,7 @@
 package com.alokomkar.core.di
 
 import android.content.Context
+import com.bumptech.glide.Glide
 import com.jakewharton.picasso.OkHttp3Downloader
 import com.squareup.picasso.Picasso
 import dagger.Module
@@ -22,5 +23,11 @@ class ImageModule {
         return Picasso.Builder(context)
             .downloader(okHttp3Downloader)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesGlide(context: Context): Glide {
+        return Glide.get(context)
     }
 }
