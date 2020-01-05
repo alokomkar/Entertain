@@ -14,7 +14,7 @@ class RemoteImpl @Inject constructor(
     private val api : FeatureAPI
 ) : DataContract.Remote {
 
-    override fun fetchShows(pageIndex: Int): Observable<FeatureResponse> = api.search("friends", pageIndex)
+    override fun fetchShows(searchQuery: String, pageIndex: Int): Observable<FeatureResponse> = api.search(searchQuery, pageIndex)
     override fun fetchShowById(imdbID: String): Single<ShowDetails> = api.searchById(imdbID)
 
 }

@@ -2,10 +2,9 @@ package com.alokomkar.entertainment.ui.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -20,8 +19,11 @@ import com.alokomkar.entertainment.R
 import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.ui.EntertainViewModel
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.fragment_list.*
 import javax.inject.Inject
+
 
 class ListFragment : Fragment(), OnItemClickListener {
 
@@ -107,6 +109,30 @@ class ListFragment : Fragment(), OnItemClickListener {
             viewModel.fetchBookmarks()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
+        viewModel.performSearch(isInternetConnected(), observableFromView(searchView))
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun observableFromView(searchView: SearchView): Observable<String> {
+        val subject = PublishSubject.create<String>()
+        searchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(s: String): Boolean {
+                subject.onComplete()
+                return true
+            }
+
+            override fun onQueryTextChange(text: String): Boolean {
+                subject.onNext(text)
+                return true
+            }
+        })
+        return subject
+    }
+
     private fun fetchData() {
         context?.let {
             val isInternetConnected = isInternetConnected()
@@ -117,7 +143,7 @@ class ListFragment : Fragment(), OnItemClickListener {
                 viewModel.refresh()
             }
             else
-                viewModel.fetchShows(isInternetConnected)
+                viewModel.fetchShows(isInternetConnected, "Friends")
         }
     }
 

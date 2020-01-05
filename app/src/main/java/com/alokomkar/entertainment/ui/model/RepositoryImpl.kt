@@ -8,8 +8,10 @@ import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.data.remote.Feature
 import com.alokomkar.entertainment.data.remote.ShowDetails
 import com.alokomkar.entertainment.di.ActivityScope
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @ActivityScope
@@ -33,7 +35,7 @@ class RepositoryImpl @Inject constructor(
     override val bookmarksOutcome: PublishSubject<Response<List<Bookmark>>>
             = PublishSubject.create<Response<List<Bookmark>>>()
 
-    override fun fetchShows(internetConnected: Boolean, pageIndex: Int) {
+    override fun fetchShows(internetConnected: Boolean, searchQuery: String, pageIndex: Int) {
         fetchShowsOutcome.loading(true)
         if( pageIndex == 1 ) {
             allShows.clear()
@@ -42,7 +44,7 @@ class RepositoryImpl @Inject constructor(
             .performOnBackOutOnMain(scheduler)
             .doAfterNext {
                 if( internetConnected && prevPageIndex != pageIndex ) {
-                    fetchFromRemote(pageIndex)
+                    fetchFromRemote(searchQuery, pageIndex)
                 }
             }
             .subscribe ({
@@ -58,10 +60,10 @@ class RepositoryImpl @Inject constructor(
             .addTo(compositeDisposable)
     }
 
-    override fun fetchFromRemote(pageIndex: Int) {
+    override fun fetchFromRemote(searchQuery: String, pageIndex: Int) {
         prevPageIndex = pageIndex
         fetchShowsOutcome.loading(true)
-        remote.fetchShows(pageIndex)
+        remote.fetchShows(searchQuery, pageIndex)
             .map { response ->
                 localList.clear()
                 response.search.forEach {
@@ -127,6 +129,21 @@ class RepositoryImpl @Inject constructor(
                 { bookmarksOutcome.success(it) },
                 { bookmarksOutcome.failed(it) }
             ).addTo(compositeDisposable)
+    }
+
+    override fun performSearch(
+        isConnected: Boolean,
+        observableFromView: Observable<String>,
+        pageIndex: Int
+    ) {
+        observableFromView
+            .debounce(300, TimeUnit.MILLISECONDS)
+            .filter { it.isNotEmpty() && it.length >= 3 }
+            .distinctUntilChanged()
+            .switchMap { query -> Observable.just(query) }
+            .observeOn(scheduler.mainThread())
+            .subscribe { query -> fetchShows(isConnected, query, pageIndex)}
+            .addTo(compositeDisposable)
     }
 
     override fun handleError(error: Throwable) {

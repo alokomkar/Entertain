@@ -10,6 +10,7 @@ import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.data.remote.ShowDetails
 import com.alokomkar.entertainment.di.ActivityScope
 import com.alokomkar.entertainment.ui.model.DataContract
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
@@ -20,6 +21,7 @@ class EntertainViewModel @Inject constructor(
 ) : ViewModel() {
 
     private var pageIndex = 1
+    private var searchQuery: String = ""
 
     val showsListLiveData: LiveData<Response<List<FeatureLocal>>> by lazy {
         repository.fetchShowsOutcome.toLiveData(compositeDisposable)
@@ -35,8 +37,9 @@ class EntertainViewModel @Inject constructor(
 
     private val selectedItemMutableLiveData: MutableLiveData<FeatureLocal> = MutableLiveData()
 
-    fun fetchShows(internetConnected: Boolean) {
-        repository.fetchShows(internetConnected, pageIndex++)
+    fun fetchShows(internetConnected: Boolean, searchQuery: String) {
+        this.searchQuery = searchQuery
+        repository.fetchShows(internetConnected, searchQuery, pageIndex++)
     }
 
     fun decrementPageIndex() {
@@ -60,7 +63,7 @@ class EntertainViewModel @Inject constructor(
     }
 
     fun refresh() {
-        repository.fetchFromRemote(pageIndex++)
+        repository.fetchFromRemote(searchQuery, pageIndex++)
     }
 
     fun fetchShowById(imdbID: String) {
@@ -77,6 +80,11 @@ class EntertainViewModel @Inject constructor(
 
     fun fetchBookmarks() {
         repository.fetchBookmarks()
+    }
+
+    fun performSearch(isConnected: Boolean, observableFromView: Observable<String>) {
+        repository.performSearch(isConnected, observableFromView, pageIndex++)
+
     }
 
 }

@@ -3,7 +3,6 @@ package com.alokomkar.entertainment.ui.model
 import com.alokomkar.core.networking.Response
 import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
-import com.alokomkar.entertainment.data.remote.Feature
 import com.alokomkar.entertainment.data.remote.FeatureResponse
 import com.alokomkar.entertainment.data.remote.ShowDetails
 import io.reactivex.Flowable
@@ -18,13 +17,18 @@ interface DataContract {
         val bookmarksOutcome: PublishSubject<Response<List<Bookmark>>>
         val fetchShowDetails: PublishSubject<Response<ShowDetails>>
         fun fetchShowDetails( imdbID: String )
-        fun fetchShows(internetConnected: Boolean, pageIndex : Int )
-        fun fetchFromRemote(pageIndex: Int)
+        fun fetchShows(internetConnected: Boolean, searchQuery: String, pageIndex : Int )
+        fun fetchFromRemote(searchQuery: String, pageIndex: Int)
         fun saveShows( shows : List<FeatureLocal> )
         fun bookmark(bookmarked: Boolean, item: FeatureLocal)
         fun bookmark(bookmarked: Boolean, item: Bookmark)
         fun handleError( error: Throwable )
         fun fetchBookmarks()
+        fun performSearch(
+            isConnected: Boolean,
+            observableFromView: Observable<String>,
+            pageIndex: Int
+        )
     }
 
     interface Local {
@@ -35,7 +39,7 @@ interface DataContract {
     }
 
     interface Remote {
-        fun fetchShows( pageIndex : Int ): Observable<FeatureResponse>
+        fun fetchShows(searchQuery: String, pageIndex : Int ): Observable<FeatureResponse>
         fun fetchShowById( imdbID : String ): Single<ShowDetails>
     }
 
