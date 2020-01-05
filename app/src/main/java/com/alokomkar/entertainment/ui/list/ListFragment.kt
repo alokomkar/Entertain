@@ -91,6 +91,7 @@ class ListFragment : Fragment(), OnItemClickListener {
                     }
                     is Response.Success -> {
                         bookmarksAdapter.submitList(response.data)
+                        listAdapter.setBookmarks(response.data)
                         val isEmpty = response.data.isNullOrEmpty()
                         tvBookmark.changeVisibility(!isEmpty)
                         rvBookmarkedShows.changeVisibility(!isEmpty)
@@ -150,6 +151,7 @@ class ListFragment : Fragment(), OnItemClickListener {
         when(item) {
             is FeatureLocal -> {
                 viewModel.onItemBookmarked(isBookmarked, item)
+                viewModel.fetchBookmarks()
             }
             is Bookmark -> {
                 viewModel.onItemBookmarked(isBookmarked, item)

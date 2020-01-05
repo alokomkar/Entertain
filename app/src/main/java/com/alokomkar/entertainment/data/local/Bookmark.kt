@@ -21,13 +21,13 @@ data class Bookmark(
 ) {
 
     @Ignore
-    var isBookmarked : Boolean = false
+    var isBookmarked : Boolean = true
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as FeatureLocal
+        other as Bookmark
 
         if (imdbID != other.imdbID) return false
 

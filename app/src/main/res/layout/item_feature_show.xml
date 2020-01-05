@@ -30,11 +30,11 @@
         android:orientation="vertical"
         android:padding="@dimen/default_horizontal_margin_mid">
 
-        <CheckBox
+        <ImageView
             android:id="@+id/cbBookmark"
             android:checked="true"
             android:text=""
-            android:button="@drawable/selector_bookmark"
+            android:src="@drawable/selector_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"

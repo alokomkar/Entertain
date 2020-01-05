@@ -9,7 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alokomkar.entertainment.R
 import com.alokomkar.entertainment.data.local.Bookmark
 import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.item_bookmarked_show.view.*
 import kotlinx.android.synthetic.main.item_feature_show.view.*
+import kotlinx.android.synthetic.main.item_feature_show.view.cbBookmark
+import kotlinx.android.synthetic.main.item_feature_show.view.ivFeature
+import kotlinx.android.synthetic.main.item_feature_show.view.tvDate
+import kotlinx.android.synthetic.main.item_feature_show.view.tvSubTitle
+import kotlinx.android.synthetic.main.item_feature_show.view.tvTitle
 import javax.inject.Inject
 
 class BookmarksAdapter @Inject constructor() : ListAdapter<Bookmark, BookmarksAdapter.BookmarkViewHolder>(FeatureDiffCallback()) {
@@ -51,6 +57,7 @@ class BookmarksAdapter @Inject constructor() : ListAdapter<Bookmark, BookmarksAd
                 tvTitle.text = item.title
                 tvDate.text = item.year
                 tvSubTitle.text = item.type
+                cbBookmark.isSelected = true
             }
         }
 

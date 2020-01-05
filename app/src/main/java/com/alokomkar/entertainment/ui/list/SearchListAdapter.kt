@@ -7,14 +7,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alokomkar.entertainment.R
+import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.bumptech.glide.Glide
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_feature_show.view.*
 import javax.inject.Inject
 
 class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, SearchListAdapter.FeatureViewHolder>(FeatureDiffCallback()) {
 
+    private var bookmarks: List<Bookmark> = ArrayList()
     var onItemClickListener : OnItemClickListener ?= null
     var onReadyToLoadMore: (() -> Unit)? = null
 
@@ -33,6 +34,11 @@ class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, Search
         }
     }
 
+    fun setBookmarks(data: List<Bookmark>) {
+        bookmarks = data
+        notifyItemRangeChanged(0, itemCount)
+    }
+
     inner class FeatureViewHolder(itemView: View, private val onItemClickListener: OnItemClickListener? )
         : RecyclerView.ViewHolder(itemView) {
 
@@ -43,10 +49,10 @@ class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, Search
             }
             itemView.cbBookmark.setOnClickListener {
                 if( adapterPosition != RecyclerView.NO_POSITION ) {
-                    itemView.cbBookmark.isChecked = !itemView.cbBookmark.isChecked
                     val item = getItem(adapterPosition)
-                    item.isBookmarked = itemView.cbBookmark.isChecked
-                    onItemClickListener?.onItemBookmarked(itemView.cbBookmark.isChecked, item)
+                    item.isBookmarked = !item.isBookmarked
+                    onItemClickListener?.onItemBookmarked(item.isBookmarked, item)
+                    notifyItemChanged(adapterPosition)
                 }
             }
         }
@@ -57,7 +63,8 @@ class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, Search
                 tvTitle.text = item.title
                 tvDate.text = item.year
                 tvSubTitle.text = item.type
-                cbBookmark.isChecked = item.isBookmarked
+                item.isBookmarked = bookmarks.contains(Bookmark(imdbID = item.imdbID))
+                cbBookmark.isSelected = item.isBookmarked
             }
         }
 

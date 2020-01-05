@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardUseCompatPadding="true"
-    android:layout_width="match_parent"
+    android:layout_width="200dp"
     android:layout_height="@dimen/bookmark_height"
     android:layout_marginStart="@dimen/default_horizontal_margin_mid"
     android:layout_marginEnd="@dimen/default_horizontal_margin_mid"
@@ -30,11 +30,11 @@
         android:orientation="vertical"
         android:padding="@dimen/default_horizontal_margin_mid">
 
-        <CheckBox
+        <ImageView
             android:id="@+id/cbBookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:button="@drawable/selector_bookmark"
+            android:src="@drawable/selector_bookmark"
             android:checked="true"
             android:gravity="center_vertical"
             android:text=""
