@@ -1,7 +1,6 @@
 package com.alokomkar.entertainment.ui.list
 
 import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.alokomkar.core.extensions.handleFailures
+import com.alokomkar.core.extensions.isInternetConnected
 import com.alokomkar.core.extensions.showToast
 import com.alokomkar.core.networking.Response
 import com.alokomkar.entertainment.EntertainApplication
@@ -74,7 +74,7 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
 
     private fun fetchData() {
         context?.let {
-            val isInternetConnected = isInternetConnected(it)
+            val isInternetConnected = isInternetConnected()
             if( !isInternetConnected ) {
                 Toast.makeText(it, R.string.message_showing_offline_data, Toast.LENGTH_SHORT).show()
             }
@@ -82,15 +82,8 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
                 viewModel.refresh()
             }
             else
-                viewModel.fetchShows()
+                viewModel.fetchShows(isInternetConnected)
         }
-    }
-
-    private fun isInternetConnected(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 
     override fun onItemClick(item: FeatureLocal) {

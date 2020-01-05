@@ -1,4 +1,6 @@
 package com.alokomkar.entertainment.data.remote
+import android.text.Html
+import android.text.Spanned
 import com.alokomkar.entertainment.data.base.BaseResponse
 import com.google.gson.annotations.SerializedName
 
@@ -39,8 +41,6 @@ data class ShowDetails(
     var ratings: List<Rating> = listOf(),
     @SerializedName("Released")
     var released: String = "",
-    @SerializedName("Response")
-    var response: String = "",
     @SerializedName("Runtime")
     var runtime: String = "",
     @SerializedName("Title")
@@ -54,6 +54,9 @@ data class ShowDetails(
     @SerializedName("Year")
     var year: String = ""
 ) : BaseResponse() {
+
+    fun getShowDetails() : Spanned
+        = Html.fromHtml("Plot : <br><big>$plot</big><br><br>Starring : <br><big>$actors</big><br>")
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

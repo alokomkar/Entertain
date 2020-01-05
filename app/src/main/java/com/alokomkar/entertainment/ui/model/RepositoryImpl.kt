@@ -8,6 +8,7 @@ import com.alokomkar.core.networking.Response
 import com.alokomkar.core.networking.Scheduler
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.data.remote.Feature
+import com.alokomkar.entertainment.data.remote.ShowDetails
 import com.alokomkar.entertainment.di.ActivityScope
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -25,24 +26,32 @@ class RepositoryImpl @Inject constructor(
     private val allShows : ArrayList<FeatureLocal> = ArrayList()
     private val localList : ArrayList<FeatureLocal> = ArrayList()
 
-    override val postFetchShowsOutcome: PublishSubject<Response<List<FeatureLocal>>>
+    override val fetchShowsOutcome: PublishSubject<Response<List<FeatureLocal>>>
             = PublishSubject.create<Response<List<FeatureLocal>>>()
 
-    override fun fetchShows(pageIndex: Int) {
-        postFetchShowsOutcome.loading(true)
+    override val fetchShowDetails: PublishSubject<Response<ShowDetails>>
+            = PublishSubject.create<Response<ShowDetails>>()
+
+    override fun fetchShows(internetConnected: Boolean, pageIndex: Int) {
+        fetchShowsOutcome.loading(true)
         if( pageIndex == 1 ) {
             allShows.clear()
         }
         local.fetchAllShows()
             .performOnBackOutOnMain(scheduler)
             .doAfterNext {
-                if( prevPageIndex != pageIndex ) {
+                if( internetConnected && prevPageIndex != pageIndex ) {
                     fetchFromRemote(pageIndex)
                 }
             }
             .subscribe ({
-                allShows.addAll(it)
-                postFetchShowsOutcome.success(allShows)
+                if( internetConnected )
+                    allShows.addAll(it)
+                else {
+                    if(!allShows.containsAll(it))
+                        allShows.addAll(it)
+                }
+                fetchShowsOutcome.success(allShows)
             },
                 { handleError(it) })
             .addTo(compositeDisposable)
@@ -50,7 +59,7 @@ class RepositoryImpl @Inject constructor(
 
     override fun fetchFromRemote(pageIndex: Int) {
         prevPageIndex = pageIndex
-        postFetchShowsOutcome.loading(true)
+        fetchShowsOutcome.loading(true)
         remote.fetchShows(pageIndex)
             .map { response ->
                 localList.clear()
@@ -63,8 +72,19 @@ class RepositoryImpl @Inject constructor(
             .performOnBackOutOnMain(scheduler)
             .subscribe({
                 allShows.addAll(it)
-                postFetchShowsOutcome.success(allShows)
+                fetchShowsOutcome.success(allShows)
             }, { handleError(it) })
+            .addTo(compositeDisposable)
+    }
+
+    override fun fetchShowDetails(imdbID: String) {
+        fetchShowDetails.loading(true)
+        remote.fetchShowById(imdbID)
+            .performOnBackOutOnMain(scheduler)
+            .subscribe(
+                { fetchShowDetails.success(it) },
+                { handleError(it) }
+            )
             .addTo(compositeDisposable)
     }
 
@@ -84,6 +104,6 @@ class RepositoryImpl @Inject constructor(
     override fun handleError(error: Throwable) {
         if( prevPageIndex > 1 )
             prevPageIndex--
-        postFetchShowsOutcome.onError(error)
+        fetchShowsOutcome.onError(error)
     }
 }

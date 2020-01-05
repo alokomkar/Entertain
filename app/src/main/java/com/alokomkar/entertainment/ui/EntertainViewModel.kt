@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.alokomkar.core.extensions.toLiveData
 import com.alokomkar.core.networking.Response
 import com.alokomkar.entertainment.data.local.FeatureLocal
+import com.alokomkar.entertainment.data.remote.ShowDetails
 import com.alokomkar.entertainment.di.ActivityScope
 import com.alokomkar.entertainment.ui.model.DataContract
 import io.reactivex.disposables.CompositeDisposable
@@ -20,13 +21,17 @@ class EntertainViewModel @Inject constructor(
     private var pageIndex = 1
 
     val showsListLiveData: LiveData<Response<List<FeatureLocal>>> by lazy {
-        repository.postFetchShowsOutcome.toLiveData(compositeDisposable)
+        repository.fetchShowsOutcome.toLiveData(compositeDisposable)
+    }
+
+    val showDetailsLiveData: LiveData<Response<ShowDetails>> by lazy {
+        repository.fetchShowDetails.toLiveData(compositeDisposable)
     }
 
     private val selectedItemMutableLiveData: MutableLiveData<FeatureLocal> = MutableLiveData()
 
-    fun fetchShows() {
-        repository.fetchShows(pageIndex++)
+    fun fetchShows(internetConnected: Boolean) {
+        repository.fetchShows(internetConnected, pageIndex++)
     }
 
     fun decrementPageIndex() {
@@ -51,6 +56,10 @@ class EntertainViewModel @Inject constructor(
 
     fun refresh() {
         repository.fetchFromRemote(pageIndex++)
+    }
+
+    fun fetchShowById(imdbID: String) {
+        repository.fetchShowDetails(imdbID)
     }
 
 }

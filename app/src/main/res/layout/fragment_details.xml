@@ -62,7 +62,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tvSite"
+            android:id="@+id/tvGenre"
             style="@style/Normal"
             android:layout_marginStart="@dimen/default_vertical_margin_big"
             android:layout_marginTop="@dimen/default_vertical_margin_extra_large"
@@ -80,10 +80,10 @@
             android:layout_marginTop="@dimen/default_vertical_margin_extra_large"
             android:layout_marginEnd="@dimen/default_vertical_margin_big"
             android:text="@string/app_name"
-            app:layout_constraintBottom_toBottomOf="@+id/tvSite"
+            app:layout_constraintBottom_toBottomOf="@+id/tvGenre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/tvSite"
+            app:layout_constraintStart_toEndOf="@+id/tvGenre"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:text="@tools:sample/date/ddmmyy" />
 
@@ -96,12 +96,23 @@
             android:paddingEnd="@dimen/default_vertical_margin_big"
             android:paddingBottom="@dimen/default_vertical_margin"
             android:id="@+id/tvDescription"
+            android:background="@color/transparent_20_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvSite"
+            app:layout_constraintTop_toBottomOf="@+id/tvGenre"
             app:layout_constraintVertical_bias="0.0"
             tools:text="@tools:sample/lorem/random" />
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.13999999" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -13,8 +13,10 @@ import io.reactivex.subjects.PublishSubject
 interface DataContract {
 
     interface Repository {
-        val postFetchShowsOutcome: PublishSubject<Response<List<FeatureLocal>>>
-        fun fetchShows( pageIndex : Int )
+        val fetchShowsOutcome: PublishSubject<Response<List<FeatureLocal>>>
+        val fetchShowDetails: PublishSubject<Response<ShowDetails>>
+        fun fetchShowDetails( imdbID: String )
+        fun fetchShows(internetConnected: Boolean, pageIndex : Int )
         fun fetchFromRemote(pageIndex: Int)
         fun saveShows( shows : List<FeatureLocal> )
         fun handleError( error: Throwable )

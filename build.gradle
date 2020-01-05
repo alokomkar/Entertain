@@ -61,9 +61,6 @@ buildscript {
                     'retrofitRxAdapter': "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:${versions.retrofitRxAdapter}",
                     'okhttpLogging'    : "com.squareup.okhttp3:logging-interceptor:${versions.okhttpLogging}",
             ],
-            bumptech : [
-
-            ],
             test     : [
                     'junit'          : "junit:junit:${versions.junit}",
                     'atslRunner'     : 'androidx.test.ext:junit:1.1.0',
