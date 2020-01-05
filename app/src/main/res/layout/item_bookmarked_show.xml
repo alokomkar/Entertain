@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardUseCompatPadding="true"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/feature_height"
+    android:layout_height="@dimen/bookmark_height"
     android:layout_marginStart="@dimen/default_horizontal_margin_mid"
     android:layout_marginEnd="@dimen/default_horizontal_margin_mid"
     app:cardCornerRadius="@dimen/cardview_corner_radius"
@@ -32,28 +32,29 @@
 
         <CheckBox
             android:id="@+id/cbBookmark"
-            android:checked="true"
-            android:text=""
-            android:button="@drawable/selector_bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:button="@drawable/selector_bookmark"
+            android:checked="true"
+            android:gravity="center_vertical"
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.73" />
 
         <TextView
             android:id="@+id/tvTitle"
             style="@style/Bold.HeadLine"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="3"
+            android:maxLines="1"
             android:text="@string/app_name"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cbBookmark"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@tools:sample/lorem/random" />
@@ -61,6 +62,7 @@
         <TextView
             android:id="@+id/tvSubTitle"
             style="@style/Bold.SubTitle"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -74,6 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:visibility="gone"
             android:textSize="@dimen/default_small_text_size"
             app:layout_constraintBaseline_toBaselineOf="@+id/tvSubTitle"
             app:layout_constraintEnd_toEndOf="parent"

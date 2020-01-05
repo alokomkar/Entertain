@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.alokomkar.core.extensions.changeVisibility
 import com.alokomkar.core.extensions.handleFailures
 import com.alokomkar.core.extensions.isInternetConnected
 import com.alokomkar.core.extensions.showToast
@@ -16,15 +17,19 @@ import com.alokomkar.core.networking.Response
 import com.alokomkar.entertainment.EntertainApplication
 import com.alokomkar.entertainment.MainActivity
 import com.alokomkar.entertainment.R
+import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.ui.EntertainViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
 import javax.inject.Inject
 
-class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
+class ListFragment : Fragment(), OnItemClickListener {
 
     @Inject
     lateinit var listAdapter: SearchListAdapter
+    @Inject
+    lateinit var bookmarksAdapter: BookmarksAdapter
+
     private lateinit var viewModel: EntertainViewModel
 
     override fun onAttach(context: Context) {
@@ -42,6 +47,7 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if( rvShows.adapter == null ) {
+
             rvShows.apply {
                 adapter = listAdapter.apply {
                     onItemClickListener = this@ListFragment
@@ -51,7 +57,17 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
                     }
                 }
             }
-            listRefreshLayout.setOnRefreshListener { fetchData() }
+
+            listRefreshLayout.setOnRefreshListener {
+                fetchData()
+                viewModel.fetchBookmarks()
+            }
+
+            rvBookmarkedShows.apply {
+                adapter = bookmarksAdapter.apply {
+                    onItemClickListener = this@ListFragment
+                }
+            }
 
             viewModel.showsListLiveData.observe(viewLifecycleOwner, Observer { response ->
                 when( response ) {
@@ -66,10 +82,28 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
                     }
                 }
             })
+
+            viewModel.bookmarksLiveData.observe(viewLifecycleOwner, Observer { response ->
+                when( response ) {
+                    is Response.Progress -> {}
+                    is Response.Failure -> {
+                        handleFailures(response.e) { viewModel.fetchBookmarks() }
+                    }
+                    is Response.Success -> {
+                        bookmarksAdapter.submitList(response.data)
+                        val isEmpty = response.data.isNullOrEmpty()
+                        tvBookmark.changeVisibility(!isEmpty)
+                        rvBookmarkedShows.changeVisibility(!isEmpty)
+                    }
+                }
+            })
         }
 
         if( viewModel.showsListLiveData.value == null )
             fetchData()
+
+        if( viewModel.bookmarksLiveData.value == null )
+            viewModel.fetchBookmarks()
     }
 
     private fun fetchData() {
@@ -86,11 +120,40 @@ class ListFragment : Fragment(), SearchListAdapter.OnItemClickListener {
         }
     }
 
-    override fun onItemClick(item: FeatureLocal) {
-        viewModel.setSelectedItem(item)
-        val navController = findNavController()
-        if( navController.currentDestination?.id == R.id.listFragment ) {
-            navController.navigate(R.id.action_listFragment_to_detailsFragment)
+    override fun onItemClick(item: Any) {
+        when(item) {
+            is FeatureLocal -> {
+                viewModel.setSelectedItem(item)
+                val navController = findNavController()
+                if( navController.currentDestination?.id == R.id.listFragment ) {
+                    navController.navigate(R.id.action_listFragment_to_detailsFragment)
+                }
+            }
+            is Bookmark -> {
+                viewModel.setSelectedItem(
+                    FeatureLocal(
+                        imdbID = item.imdbID,
+                        poster = item.poster,
+                        title = item.title,
+                        type = item.type,
+                        year = item.year
+                    ))
+                val navController = findNavController()
+                if( navController.currentDestination?.id == R.id.listFragment ) {
+                    navController.navigate(R.id.action_listFragment_to_detailsFragment)
+                }
+            }
+        }
+    }
+
+    override fun onItemBookmarked(isBookmarked: Boolean, item : Any) {
+        when(item) {
+            is FeatureLocal -> {
+                viewModel.onItemBookmarked(isBookmarked, item)
+            }
+            is Bookmark -> {
+                viewModel.onItemBookmarked(isBookmarked, item)
+            }
         }
     }
 

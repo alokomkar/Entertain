@@ -7,33 +7,27 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alokomkar.entertainment.R
-import com.alokomkar.entertainment.data.local.FeatureLocal
+import com.alokomkar.entertainment.data.local.Bookmark
 import com.bumptech.glide.Glide
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_feature_show.view.*
 import javax.inject.Inject
 
-class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, SearchListAdapter.FeatureViewHolder>(FeatureDiffCallback()) {
+class BookmarksAdapter @Inject constructor() : ListAdapter<Bookmark, BookmarksAdapter.BookmarkViewHolder>(FeatureDiffCallback()) {
 
     var onItemClickListener : OnItemClickListener ?= null
-    var onReadyToLoadMore: (() -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureViewHolder
-            = FeatureViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookmarkViewHolder
+            = BookmarkViewHolder(
         LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.item_feature_show, parent, false),
+            .inflate(R.layout.item_bookmarked_show, parent, false),
         onItemClickListener)
 
-    override fun onBindViewHolder(holder: FeatureViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BookmarkViewHolder, position: Int) {
         holder.bindData(getItem(position))
-        onReadyToLoadMore?.let {
-            if (position == itemCount - 2)
-                it.invoke()
-        }
     }
 
-    inner class FeatureViewHolder(itemView: View, private val onItemClickListener: OnItemClickListener? )
+    inner class BookmarkViewHolder(itemView: View, private val onItemClickListener: OnItemClickListener? )
         : RecyclerView.ViewHolder(itemView) {
 
         init {
@@ -43,32 +37,31 @@ class SearchListAdapter @Inject constructor() : ListAdapter<FeatureLocal, Search
             }
             itemView.cbBookmark.setOnClickListener {
                 if( adapterPosition != RecyclerView.NO_POSITION ) {
-                    itemView.cbBookmark.isChecked = !itemView.cbBookmark.isChecked
                     val item = getItem(adapterPosition)
-                    item.isBookmarked = itemView.cbBookmark.isChecked
-                    onItemClickListener?.onItemBookmarked(itemView.cbBookmark.isChecked, item)
+                    item.isBookmarked = false
+                    onItemClickListener?.onItemBookmarked(false, item)
+                    notifyItemRemoved(adapterPosition)
                 }
             }
         }
 
-        fun bindData(item: FeatureLocal) {
+        fun bindData(item: Bookmark) {
             with(itemView) {
                 Glide.with(this).asBitmap().load(item.poster).into(ivFeature)
                 tvTitle.text = item.title
                 tvDate.text = item.year
                 tvSubTitle.text = item.type
-                cbBookmark.isChecked = item.isBookmarked
             }
         }
 
     }
 
-    private class FeatureDiffCallback : DiffUtil.ItemCallback<FeatureLocal>() {
+    private class FeatureDiffCallback : DiffUtil.ItemCallback<Bookmark>() {
 
-        override fun areItemsTheSame(oldItem: FeatureLocal, newItem: FeatureLocal): Boolean
+        override fun areItemsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean
                 = oldItem.imdbID == newItem.imdbID
 
-        override fun areContentsTheSame(oldItem: FeatureLocal, newItem: FeatureLocal): Boolean
+        override fun areContentsTheSame(oldItem: Bookmark, newItem: Bookmark): Boolean
                 = oldItem == newItem
 
     }

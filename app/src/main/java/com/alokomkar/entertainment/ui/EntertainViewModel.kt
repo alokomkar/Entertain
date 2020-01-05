@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alokomkar.core.extensions.toLiveData
 import com.alokomkar.core.networking.Response
+import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.data.remote.ShowDetails
 import com.alokomkar.entertainment.di.ActivityScope
@@ -22,6 +23,10 @@ class EntertainViewModel @Inject constructor(
 
     val showsListLiveData: LiveData<Response<List<FeatureLocal>>> by lazy {
         repository.fetchShowsOutcome.toLiveData(compositeDisposable)
+    }
+
+    val bookmarksLiveData: LiveData<Response<List<Bookmark>>> by lazy {
+        repository.bookmarksOutcome.toLiveData(compositeDisposable)
     }
 
     val showDetailsLiveData: LiveData<Response<ShowDetails>> by lazy {
@@ -60,6 +65,18 @@ class EntertainViewModel @Inject constructor(
 
     fun fetchShowById(imdbID: String) {
         repository.fetchShowDetails(imdbID)
+    }
+
+    fun onItemBookmarked(bookmarked: Boolean, item: FeatureLocal) {
+        repository.bookmark(bookmarked, item)
+    }
+
+    fun onItemBookmarked(bookmarked: Boolean, item: Bookmark) {
+        repository.bookmark(bookmarked, item)
+    }
+
+    fun fetchBookmarks() {
+        repository.fetchBookmarks()
     }
 
 }

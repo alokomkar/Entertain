@@ -1,11 +1,9 @@
 package com.alokomkar.entertainment.ui.model
 
-import com.alokomkar.core.extensions.addTo
-import com.alokomkar.core.extensions.loading
-import com.alokomkar.core.extensions.performOnBackOutOnMain
-import com.alokomkar.core.extensions.success
+import com.alokomkar.core.extensions.*
 import com.alokomkar.core.networking.Response
 import com.alokomkar.core.networking.Scheduler
+import com.alokomkar.entertainment.data.local.Bookmark
 import com.alokomkar.entertainment.data.local.FeatureLocal
 import com.alokomkar.entertainment.data.remote.Feature
 import com.alokomkar.entertainment.data.remote.ShowDetails
@@ -31,6 +29,9 @@ class RepositoryImpl @Inject constructor(
 
     override val fetchShowDetails: PublishSubject<Response<ShowDetails>>
             = PublishSubject.create<Response<ShowDetails>>()
+
+    override val bookmarksOutcome: PublishSubject<Response<List<Bookmark>>>
+            = PublishSubject.create<Response<List<Bookmark>>>()
 
     override fun fetchShows(internetConnected: Boolean, pageIndex: Int) {
         fetchShowsOutcome.loading(true)
@@ -97,8 +98,35 @@ class RepositoryImpl @Inject constructor(
         feature.year
     )
 
+    private fun mapToBookmark(item: FeatureLocal): Bookmark
+            = Bookmark(
+        item.imdbID,
+        item.poster,
+        item.title,
+        item.type,
+        item.year
+    )
+
     override fun saveShows(shows: List<FeatureLocal>) {
         local.saveShows(shows)
+    }
+
+    override fun bookmark(bookmarked: Boolean, item: FeatureLocal) {
+        local.bookmark(bookmarked, mapToBookmark(item))
+    }
+
+    override fun bookmark(bookmarked: Boolean, item: Bookmark) {
+        local.bookmark(bookmarked, item)
+    }
+
+    override fun fetchBookmarks() {
+        bookmarksOutcome.loading(true)
+        local.fetchAllBookmarks()
+            .performOnBackOutOnMain(scheduler)
+            .subscribe(
+                { bookmarksOutcome.success(it) },
+                { bookmarksOutcome.failed(it) }
+            ).addTo(compositeDisposable)
     }
 
     override fun handleError(error: Throwable) {

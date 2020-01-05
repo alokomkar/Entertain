@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity
-data class FeatureLocal(
+data class Bookmark(
     @PrimaryKey
     @SerializedName("imdbID")
     var imdbID: String = "",

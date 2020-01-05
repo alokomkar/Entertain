@@ -37,14 +37,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvShows"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/item_feature_show"
-            android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"/>
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvBookmark"
+                    android:visibility="gone"
+                    android:paddingStart="@dimen/default_vertical_margin"
+                    android:paddingEnd="@dimen/default_vertical_margin"
+                    android:background="@color/transparent_20_black"
+                    style="@style/Normal.SubTitle"
+                    android:text="@string/favourites"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvBookmarkedShows"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent_20_black"
+                    tools:listitem="@layout/item_bookmarked_show"
+                    android:clipToPadding="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="horizontal"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvShows"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:listitem="@layout/item_feature_show"
+                    android:clipToPadding="false"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="vertical"/>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

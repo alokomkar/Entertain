@@ -3,6 +3,7 @@ package com.alokomkar.entertainment.ui.list
 import android.content.Context
 import androidx.room.Room
 import com.alokomkar.core.constants.Constants
+import com.alokomkar.entertainment.data.local.BookmarkDao
 import com.alokomkar.entertainment.data.local.FeatureLocalDao
 import com.alokomkar.entertainment.data.local.LocalDB
 import com.alokomkar.entertainment.data.remote.FeatureAPI
@@ -25,6 +26,10 @@ class ListModule {
     @Provides
     @ActivityScope
     fun listAdapter(): SearchListAdapter = SearchListAdapter()
+
+    @Provides
+    @ActivityScope
+    fun bookmarkAdapter(): BookmarksAdapter = BookmarksAdapter()
     
     @Provides
     @ActivityScope
@@ -34,6 +39,10 @@ class ListModule {
     @Provides
     @ActivityScope
     fun localDao( localDB: LocalDB ): FeatureLocalDao = localDB.featureLocalDao()
+
+    @Provides
+    @ActivityScope
+    fun bookmarkDao( localDB: LocalDB ): BookmarkDao = localDB.bookmarkDao()
 
     @Provides
     @ActivityScope
