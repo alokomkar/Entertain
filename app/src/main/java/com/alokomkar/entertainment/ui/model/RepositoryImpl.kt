@@ -1,5 +1,6 @@
 package com.alokomkar.entertainment.ui.model
 
+import android.util.Log
 import com.alokomkar.core.extensions.*
 import com.alokomkar.core.networking.Response
 import com.alokomkar.core.networking.Scheduler
@@ -25,6 +26,7 @@ class RepositoryImpl @Inject constructor(
     private var prevPageIndex = -1
     private val allShows : ArrayList<FeatureLocal> = ArrayList()
     private val localList : ArrayList<FeatureLocal> = ArrayList()
+    private var searchQuery: String = ""
 
     override val fetchShowsOutcome: PublishSubject<Response<List<FeatureLocal>>>
             = PublishSubject.create<Response<List<FeatureLocal>>>()
@@ -36,14 +38,19 @@ class RepositoryImpl @Inject constructor(
             = PublishSubject.create<Response<List<Bookmark>>>()
 
     override fun fetchShows(internetConnected: Boolean, searchQuery: String, pageIndex: Int) {
+        Log.d("SearchRepo", "Search query : fetchShows : $searchQuery : pageIndex : $pageIndex")
         fetchShowsOutcome.loading(true)
         if( pageIndex == 1 ) {
             allShows.clear()
         }
-        local.fetchAllShows()
+        this.searchQuery = searchQuery
+        if( internetConnected ) {
+            fetchFromRemote(searchQuery, pageIndex)
+        }
+        /*local.fetchAllShows()
             .performOnBackOutOnMain(scheduler)
             .doAfterNext {
-                if( internetConnected && prevPageIndex != pageIndex ) {
+                if( internetConnected ) {
                     fetchFromRemote(searchQuery, pageIndex)
                 }
             }
@@ -57,12 +64,16 @@ class RepositoryImpl @Inject constructor(
                 fetchShowsOutcome.success(allShows)
             },
                 { handleError(it) })
-            .addTo(compositeDisposable)
+            .addTo(compositeDisposable)*/
     }
 
     override fun fetchFromRemote(searchQuery: String, pageIndex: Int) {
         prevPageIndex = pageIndex
+        if( pageIndex == 1 ) {
+            allShows.clear()
+        }
         fetchShowsOutcome.loading(true)
+        Log.d("SearchRepo", "Search query : fetchFromRemote : $searchQuery : pageIndex : $pageIndex")
         remote.fetchShows(searchQuery, pageIndex)
             .map { response ->
                 localList.clear()
@@ -144,6 +155,10 @@ class RepositoryImpl @Inject constructor(
             .observeOn(scheduler.mainThread())
             .subscribe { query -> fetchShows(isConnected, query, pageIndex)}
             .addTo(compositeDisposable)
+    }
+
+    override fun performSearch(isConnected: Boolean, pageIndex: Int) {
+        fetchShows(isConnected, searchQuery, pageIndex)
     }
 
     override fun handleError(error: Throwable) {

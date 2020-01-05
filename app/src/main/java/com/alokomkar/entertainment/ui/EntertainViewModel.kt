@@ -84,7 +84,10 @@ class EntertainViewModel @Inject constructor(
 
     fun performSearch(isConnected: Boolean, observableFromView: Observable<String>) {
         repository.performSearch(isConnected, observableFromView, pageIndex++)
+    }
 
+    fun continueSearch(internetConnected: Boolean) {
+        repository.performSearch(internetConnected, pageIndex++ )
     }
 
 }

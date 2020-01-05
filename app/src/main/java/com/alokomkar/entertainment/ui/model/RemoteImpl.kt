@@ -1,6 +1,5 @@
 package com.alokomkar.entertainment.ui.model
 
-import com.alokomkar.entertainment.data.remote.Feature
 import com.alokomkar.entertainment.data.remote.FeatureAPI
 import com.alokomkar.entertainment.data.remote.FeatureResponse
 import com.alokomkar.entertainment.data.remote.ShowDetails

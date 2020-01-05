@@ -1,5 +1,6 @@
 package com.alokomkar.entertainment.ui.model
 
+import android.util.Log
 import com.alokomkar.core.extensions.performOnBackOutOnMain
 import com.alokomkar.core.networking.Scheduler
 import com.alokomkar.entertainment.data.local.Bookmark
@@ -18,10 +19,15 @@ class LocalImpl @Inject constructor(
     private val scheduler: Scheduler
 ) : DataContract.Local {
 
+    @Synchronized
     override fun saveShows(shows: List<FeatureLocal>) {
-        Completable.fromAction { dao.upsertAll(shows) }
+        /*Completable.fromAction { dao.upsertAll(shows) }
             .performOnBackOutOnMain(scheduler)
-            .subscribe()
+            .doOnError {
+                Log.e("LocalImpl", "saveShows : ${it.cause} : ${it.message}")
+                it.printStackTrace()
+            }
+            .subscribe()*/
     }
 
     override fun fetchAllShows(): Flowable<List<FeatureLocal>>
@@ -32,6 +38,10 @@ class LocalImpl @Inject constructor(
             if( bookmarked ) bookmarkDao.insert(item)
             else bookmarkDao.delete(item)
         }.performOnBackOutOnMain(scheduler)
+            .doOnError {
+                Log.e("LocalImpl", "bookmark : ${it.cause} : ${it.message}")
+                it.printStackTrace()
+            }
             .subscribe()
 
     }

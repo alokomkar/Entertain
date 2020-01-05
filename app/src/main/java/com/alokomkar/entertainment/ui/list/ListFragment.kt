@@ -2,8 +2,8 @@ package com.alokomkar.entertainment.ui.list
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -100,20 +100,18 @@ class ListFragment : Fragment(), OnItemClickListener {
                     }
                 }
             })
+
+            val searchMenuItem = toolbar.menu.findItem(R.id.action_search)
+            val searchView: SearchView = searchMenuItem.actionView as SearchView
+            viewModel.performSearch(isInternetConnected(), observableFromView(searchView))
         }
 
-        if( viewModel.showsListLiveData.value == null )
-            fetchData()
+        /*if( viewModel.showsListLiveData.value == null )
+            fetchData()*/
 
         if( viewModel.bookmarksLiveData.value == null )
             viewModel.fetchBookmarks()
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
-        val searchView: SearchView = menu.findItem(R.id.action_search).actionView as SearchView
-        viewModel.performSearch(isInternetConnected(), observableFromView(searchView))
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun observableFromView(searchView: SearchView): Observable<String> {
@@ -126,6 +124,7 @@ class ListFragment : Fragment(), OnItemClickListener {
             }
 
             override fun onQueryTextChange(text: String): Boolean {
+                Log.d("ListFragment", "onQueryTextChange : $text")
                 subject.onNext(text)
                 return true
             }
@@ -134,17 +133,7 @@ class ListFragment : Fragment(), OnItemClickListener {
     }
 
     private fun fetchData() {
-        context?.let {
-            val isInternetConnected = isInternetConnected()
-            if( !isInternetConnected ) {
-                Toast.makeText(it, R.string.message_showing_offline_data, Toast.LENGTH_SHORT).show()
-            }
-            if( isInternetConnected ) {
-                viewModel.refresh()
-            }
-            else
-                viewModel.fetchShows(isInternetConnected, "Friends")
-        }
+        viewModel.continueSearch(isInternetConnected())
     }
 
     override fun onItemClick(item: Any) {

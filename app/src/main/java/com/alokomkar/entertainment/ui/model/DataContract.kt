@@ -29,6 +29,8 @@ interface DataContract {
             observableFromView: Observable<String>,
             pageIndex: Int
         )
+
+        fun performSearch(isConnected: Boolean, pageIndex: Int)
     }
 
     interface Local {
